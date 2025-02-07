@@ -3,24 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>11:31 Auto-Play Audio Once</title>
+    <title>Auto-Play Audio Once</title>
 </head>
 <body>
-    <audio id="audio">
+    <audio autoplay>
         <source src="0.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var audio = document.getElementById("audio");
-
-            // Check if audio has already played in this session
-            if (!sessionStorage.getItem("audioPlayed")) {
-                audio.play().catch(error => console.log("Autoplay blocked:", error));
-                sessionStorage.setItem("audioPlayed", "true"); // Mark as played
-            }
-        });
-    </script>
 </body>
 </html>
