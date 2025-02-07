@@ -14,9 +14,18 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var audio = document.getElementById("audio");
-            audio.play();
+
+            // Check if audio has already played using localStorage
+            if (!localStorage.getItem("audioPlayed")) {
+                audio.play();
+                localStorage.setItem("audioPlayed", "true"); // Mark as played
+            } else {
+                audio.remove(); // Prevent playing again
+            }
+
+            // Remove audio from DOM after it finishes
             audio.onended = function() {
-                audio.remove(); // Remove after playing once
+                audio.remove();
             };
         });
     </script>
