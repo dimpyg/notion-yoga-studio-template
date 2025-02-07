@@ -6,7 +6,7 @@
     <title>Auto-Play Audio Once</title>
 </head>
 <body>
-    <audio id="audio" autoplay>
+    <audio id="audio">
         <source src="audio.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -15,15 +15,13 @@
         document.addEventListener("DOMContentLoaded", function() {
             var audio = document.getElementById("audio");
 
-            // Check if audio has already played using localStorage
-            if (!localStorage.getItem("audioPlayed")) {
-                audio.play();
-                localStorage.setItem("audioPlayed", "true"); // Mark as played
-            } else {
-                audio.remove(); // Prevent playing again
+            // Check if audio has already played in this session
+            if (!sessionStorage.getItem("audioPlayed")) {
+                audio.play().catch(error => console.log("Autoplay blocked:", error));
+                sessionStorage.setItem("audioPlayed", "true"); // Mark as played
             }
-
-            // Remove audio from DOM after it finishes
+            
+            // Remove audio element after it finishes playing
             audio.onended = function() {
                 audio.remove();
             };
