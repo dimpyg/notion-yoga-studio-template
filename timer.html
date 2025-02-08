@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
+    <title>Guided Notion Flow</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -15,37 +16,76 @@
             text-align: center;
         }
         #timer {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
-            color: #333;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 90%;
+            height: 70vh;
+            border: none;
+            background: white;
         }
     </style>
-    <script>
-        function startTimer(duration, redirectUrl) {
-            let timer = duration, minutes, seconds;
-            const display = document.getElementById('timer');
-
-            const interval = setInterval(() => {
-                minutes = Math.floor(timer / 60);
-                seconds = timer % 60;
-                display.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-                
-                if (--timer < 0) {
-                    clearInterval(interval);
-                    window.location.href = redirectUrl; // Redirect when timer ends
-                }
-            }, 1000);
-        }
-
-        window.onload = () => {
-            const duration = 60; // 60 seconds
-            const redirectUrl = "https://www.notion.so/90-90-Hip-Switch-1908bb49afed813aa216c15d3cadd86f?pvs=2"; // Change this to your target URL
-            startTimer(duration, redirectUrl);
-        };
-    </script>
 </head>
 <body>
-    <h1>Redirecting in:</h1>
-    <div id="timer">1:00</div>
+    <h1>Notion Page Flow</h1>
+    <p id="status">Starting in <span id="timer">3</span> seconds...</p>
+    <iframe id="notionFrame"></iframe>
+
+    <script>
+        // List of Notion pages with time properties (seconds)
+        const notionPages = [
+            { url: "https://www.notion.so/90-90-1908bb49afed81b7a21af1593dc72799?pvs=4", time: 30 },
+            { url: "https://www.notion.so/90-90-Hip-Switch-1908bb49afed813aa216c15d3cadd86f?pvs=4", time: 60 },
+            { url: "https://www.notion.so/90-90-Hip-Switch-No-Hands-1908bb49afed8137964fced597a38113?pvs=4", time: 30 },
+            { url: "https://www.notion.so/90-90-Hip-Switch-Extension-1908bb49afed8150b8bee76af16203c7?pvs=4", time: 60 }
+        ];
+
+        let currentIndex = 0;
+        const iframe = document.getElementById("notionFrame");
+        const timerDisplay = document.getElementById("timer");
+        const statusDisplay = document.getElementById("status");
+
+        function startFlow() {
+            if (currentIndex >= notionPages.length) {
+                statusDisplay.innerHTML = "Flow completed! 🎉";
+                return;
+            }
+
+            const { url, time } = notionPages[currentIndex];
+            iframe.src = url;
+            statusDisplay.innerHTML = `Viewing page ${currentIndex + 1} for <span id="timer">${time}</span> seconds...`;
+
+            let countdown = time;
+            timerDisplay.textContent = countdown;
+
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                timerDisplay.textContent = countdown;
+                if (countdown <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            setTimeout(() => {
+                statusDisplay.innerHTML = "Waiting 10 seconds before next page...";
+                let delayCountdown = 10;
+                timerDisplay.textContent = delayCountdown;
+
+                const delayInterval = setInterval(() => {
+                    delayCountdown--;
+                    timerDisplay.textContent = delayCountdown;
+                    if (delayCountdown <= 0) clearInterval(delayInterval);
+                }, 1000);
+
+                setTimeout(() => {
+                    currentIndex++;
+                    startFlow();
+                }, 10000);
+            }, time * 1000);
+        }
+
+        // Start the flow after 3 seconds
+        setTimeout(startFlow, 3000);
+    </script>
 </body>
 </html>
